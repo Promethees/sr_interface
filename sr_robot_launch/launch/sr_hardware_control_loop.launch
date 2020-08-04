@@ -27,6 +27,8 @@
   <arg if="$(eval arg('hand') and arg('hand_id')=='lh' and not arg('arm'))" name="robot_description" default="$(find sr_description)/robots/shadowhand_left_motor_plus.urdf.xacro"/>
   <arg if="$(eval arg('hand') and not arg('arm'))" name="robot_config_file" default="$(find sr_multi_moveit_config)/config/robot_configs/$(arg side)_sh.yaml"/>
 
+  <!-- setting this parameter to false allows to load the robot_description from a higher level -->
+  <arg name="load_robot_description" default="true"/>
   <!-- Robot config -->
 
   <!-- HANDS CONFIG-->
@@ -48,7 +50,8 @@
   <!-- Set to true to spawn the position controllers for the arm-->
   <arg name="arm_position" default="$(eval not arm_trajectory)"/>
   <arg name="arm_speed_scale" default="0.5"/>
-  <arg name="kinematics_config" default="$(find ur_description)/config/ur10_default.yaml"/>
+  <arg name="kinematics_config" if="$(eval not arg('robot_model') == 'ur10')" default="$(find ur_description)/config/ur10_default.yaml"/>
+  <arg name="kinematics_config" if="$(eval not arg('robot_model') == 'ur10e')" default="$(find ur_e_description)/config/ur10e_default.yaml"/>
   <arg name="urcap_program_name" default="external_ctrl.urp"/>
   <arg name="load_robot_description_command" default="xacro $(arg robot_description) prefix:=$(arg hand_id)_ initial_z:=$(arg initial_z) kinematics_config:=$(arg kinematics_config)"/>
 
@@ -93,11 +96,12 @@
       <arg name="robot_state_pub_frequency" value="$(arg robot_state_pub_frequency)"/>
       <arg name="joint_state_pub_frequency" value="$(arg joint_state_pub_frequency)"/>
       <arg name="initial_z" value="$(arg initial_z)"/>
+      <arg name="load_robot_description" value="$(arg load_robot_description)"/>
     </include>
     <node if="$(arg hand_ctrl)" name="$(arg hand_id)_controller_spawner" pkg="sr_utilities" type="controller_spawner.py" output="screen">
       <param name="controller_group" value="$(arg hand_controller_group)"/>
       <param name="exclude_wrist" value="$(arg include_wrist_in_arm_controller)"/>
-      <param name="wait_for" value ="calibrated"/>
+      <param name="wait_for" value="calibrated"/>
     </node>
   </group>
 
