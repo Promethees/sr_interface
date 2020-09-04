@@ -51,8 +51,8 @@
   <!-- Set to true to spawn the position controllers for the arm-->
   <arg name="arm_position" default="$(eval not arm_trajectory)"/>
   <arg name="arm_speed_scale" default="0.5"/>
-  <arg if="$(arg hand_ctrl)" name="arm_payload_mass" default="4.55"/>
-  <arg if="$(arg hand_ctrl)" name="arm_payload_cog" default="[0.0, 0.0, 0.12]"/>
+  <arg if="$(arg hand_ctrl)" name="arm_payload_mass" default="5.0"/>
+  <arg if="$(arg hand_ctrl)" name="arm_payload_cog" default="[0.03, 0.01, 0.11]"/>
   <arg unless="$(arg hand_ctrl)" name="arm_payload_mass" default="0.0"/>
   <arg unless="$(arg hand_ctrl)" name="arm_payload_cog" default="[0.0, 0.0, 0.0]"/>
   <arg name="kinematics_config" if="$(eval not arg('robot_model') == 'ur10e')" default="$(find ur_description)/config/ur10_default.yaml"/>
@@ -61,7 +61,7 @@
   <arg name="load_robot_description_command" default="xacro $(arg robot_description) prefix:=$(arg hand_id)_ initial_z:=$(arg initial_z) arm_x_separation:=$(arg arm_x_separation) arm_y_separation:=$(arg arm_y_separation) kinematics_config:=$(arg kinematics_config)"/>
 
   <node pkg="rosservice" type="rosservice" name="set_speed_scale" args="call --wait /$(arg arm_prefix)_sr_ur_robot_hw/set_speed_slider 'speed_slider_fraction: $(arg arm_speed_scale)'"/>
-  <node pkg="rosservice" type="rosservice" name="set_payload" args="call --wait /$(arg arm_prefix)_sr_ur_robot_hw/set_payload '{payload: $(arg arm_payload_mass), center_of_gravity: $(arg arm_payload_cog)}'"/>
+  <node pkg="rosservice" type="rosservice" name="set_payload" args="call --wait /$(arg arm_prefix)_sr_ur_robot_hw/set_payload '{payload: $(arg arm_payload_mass), center_of_gravity: $(arg arm_payload_cog)}'" output="screen"/>
 
   <!-- Logging local topics -->
   <group ns="control_box">
