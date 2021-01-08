@@ -129,5 +129,5 @@ class SrStateSaverUnsafe(object):
         rs.joint_state = JointState()
         rs.joint_state.name = current_dict.keys()
         rs.joint_state.position = current_dict.values()
-        rospy.logwarn(rs)
+        rospy.loginfo(rs)
         self._save(self._name, robot_name, rs)
